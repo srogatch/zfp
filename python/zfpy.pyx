@@ -164,6 +164,8 @@ cpdef bytes compress_numpy(
     cdef bytes compress_str = None
     cdef size_t maxsize = zfp_stream_maximum_size(stream, field)
     try:
+        if zfp_stream_set_omp_threads(stream, 0) == 0:
+            raise RuntimeError("Cannot enable OpenMP")
         with Memory(maxsize) as data:
             bstream = stream_open(data, maxsize)
             zfp_stream_set_bit_stream(stream, bstream)
@@ -356,6 +358,8 @@ cpdef np.ndarray decompress_numpy(
     cdef np.ndarray output
 
     try:
+        if zfp_stream_set_omp_threads(stream, 0) == 0:
+            raise RuntimeError("Cannot enable OpenMP")
         if zfp_read_header(stream, field, HEADER_FULL) == 0:
             raise ValueError("Failed to read required zfp header")
         output = np.asarray(_decompress_with_view(field, stream))

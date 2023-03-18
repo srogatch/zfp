@@ -76,4 +76,5 @@ cdef extern from "zfp.h":
     size_t zfp_write_header(zfp_stream* stream, const zfp_field* field, cython.uint mask)
     size_t zfp_read_header(zfp_stream* stream, zfp_field* field, cython.uint mask)
     void zfp_stream_params(zfp_stream* stream, cython.uint* minbits, cython.uint* maxbits, cython.uint* maxprec, int* minexp);
+    zfp_bool zfp_stream_set_omp_threads(zfp_stream* stream, cython.uint threads);
 cdef gen_padded_int_list(orig_array, pad=*, length=*)
