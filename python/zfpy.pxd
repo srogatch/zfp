@@ -24,6 +24,12 @@ cdef extern from "zfp.h":
         zfp_mode_fixed_precision = 3,
         zfp_mode_fixed_accuracy  = 4,
         zfp_mode_reversible      = 5
+    
+    ctypedef enum zfp_index_type:
+        zfp_index_none = 0,   # no index
+        zfp_index_offset = 1, # raw 64-bit offsets (OpenMP and CUDA decompression)
+        zfp_index_length = 2, # raw 16-bit lengths
+        zfp_index_hybrid = 3  # hybrid (CUDA decompression)
 
     # structs
     ctypedef struct zfp_field:
@@ -32,6 +38,9 @@ cdef extern from "zfp.h":
         ptrdiff_t sx, sy, sz, sw
         void* data
     ctypedef struct zfp_stream:
+        pass
+    
+    ctypedef struct zfp_index:
         pass
 
     ctypedef int zfp_bool
@@ -75,6 +84,10 @@ cdef extern from "zfp.h":
     size_t zfp_decompress(zfp_stream* stream, zfp_field* field) nogil
     size_t zfp_write_header(zfp_stream* stream, const zfp_field* field, cython.uint mask)
     size_t zfp_read_header(zfp_stream* stream, zfp_field* field, cython.uint mask)
-    void zfp_stream_params(zfp_stream* stream, cython.uint* minbits, cython.uint* maxbits, cython.uint* maxprec, int* minexp);
-    zfp_bool zfp_stream_set_omp_threads(zfp_stream* stream, cython.uint threads);
+    void zfp_stream_params(zfp_stream* stream, cython.uint* minbits, cython.uint* maxbits, cython.uint* maxprec, int* minexp)
+    zfp_bool zfp_stream_set_omp_threads(zfp_stream* stream, cython.uint threads)
+    zfp_index* zfp_index_create()
+    void zfp_stream_set_index(zfp_stream* zfp, zfp_index* index)
+    void zfp_index_set_type(zfp_index* index, zfp_index_type type, cython.uint granularity)
+
 cdef gen_padded_int_list(orig_array, pad=*, length=*)

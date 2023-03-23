@@ -155,6 +155,10 @@ cpdef bytes compress_numpy(
     cdef zfp_field* field = _init_field(arr)
     cdef zfp_stream* stream = zfp_stream_open(NULL)
 
+    # cdef zfp_index* index = zfp_index_create()
+    # zfp_index_set_type(index, zfp_index_offset, 1)
+    # zfp_stream_set_index(stream, index)
+
     cdef zfp_type ztype = zfp_type_none
     cdef int ndim = arr.ndim
     _set_compression_mode(stream, ztype, ndim, tolerance, rate, precision)
